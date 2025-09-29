@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Cheatsheet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="nav-links" id="navLinks">
+        <a href="#nodes" class="nav-item">Nodes</a>
+        <a href="#pod" class="nav-item">Pods</a>
+        <a href="#namespaces" class="nav-item">Namespaces</a>
+        <a href="#deployments" class="nav-item">Deployments</a>
+        <a href="#services" class="nav-item">Services</a>
+        <a href="#real-time-monitoring" class="nav-item">Real-Time Monitoring</a>
+        <a href="#roles" class="nav-item">Roles</a>
+    </nav>
+    <div class="cheatsheet">
+        <header>
+            <h1>KUBERNETES(K8s) CHEATSHEET</h1>
+            <div class="header-info">
+                <div class="profile-text">
+                    <span class="program"><a href="https://www.iamdinesh.xyz/" target="_blank" style="color: #5fff6d;">
+                            Dinesh Chowdary</a></span>
+                </div>
+            </div>
+        </header>
+        <section class="section">
+            <h2>Viewing Resource Information</h2>
+            <div class="content">
+                <div class="subsection">
+                    <h3 id="nodes">Nodes</h3>
+                    <div class="command">
+                        <code data-fulltext="kubectl get no">kubectl get no</code>
+                        <span class="comment"># retrieve a list of all nodes in the current cluster</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get no -o wide">kubectl get no -o wide</code>
+                        <span class="comment"># retrieve a list of all nodes in the current cluster with additional
+                            details such as the node's IP address and role</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl describe no">kubectl describe no</code>
+                        <span class="comment"># retrieve detailed node information</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get no -o yaml">kubectl get no -o yaml</code>
+                        <span class="comment"># retrieve a list of all nodes in the current cluster in YAML
+                            format</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get node --selector=label-name">kubectl get node --selector=label-name</code>
+                        <span class="comment"># retrieve a list of all nodes with the specified label</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type==\"ExternalIP\")].address}'">kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'</code>
+                        <span class="comment"># retrieve a list of all node external IP addresses</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl top node &lt;node-name&gt;">kubectl top node &lt;node-name&gt;</code>
+                        <span class="comment"># display resource usage statistics for a specific node</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 id="pod">Pods</h3>
+                    <div class="command">
+                        <code data-fulltext="kubectl get po">kubectl get po</code>
+                        <span class="comment"># get a list of pods</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get po -o wide">kubectl get po -o wide</code>
+                        <span class="comment"># get a wide view of pods, including Node and IP</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl describe po">kubectl describe po</code>
+                        <span class="comment"># describe all the pods in the current namespace</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get po --show-labels">kubectl get po --show-labels</code>
+                        <span class="comment"># get list of pods with labels</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get po -l app=&lt;app-name&gt;">kubectl get po -l app=&lt;app-name&gt;</code>
+                        <span class="comment"># get list of pods with label "app" equal to &lt;app-name&gt;</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code data-fulltext="kubectl get po -o yaml">kubectl get po -o yaml</code>
+                        <span class="comment"># get yaml definition of all the pods in the current namespace</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get pod &lt;pod-name&gt; -o yaml --export &gt; myoffline.yaml">kubectl get pod &lt;pod-name&gt; -o yaml --export &gt; myoffline.yaml</code>
+                        <span class="comment"># save yaml definition of the specific pod in the file</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get pods --field-selector=status.phase=Running">kubectl get pods --field-selector=status.phase=Running</code>
+                        <span class="comment"># get list of pods with the status "Running"</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                </div>
+
+                <section class="section">
+                    <h2>Adding Resources</h2>
+                    <div class="content">
+                        <div class="subsection">
+                            <h3 id="create-A-Pod">Creating A Pod</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl create -f &lt;name.of.file&gt;">kubectl create -f &lt;name.of.file&gt;</code>
+                                <span class="comment"># create resources from a file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl apply -f &lt;name.of.file&gt;">kubectl apply -f &lt;name.of.file&gt;</code>
+                                <span class="comment"># apply changes from a file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl run &lt;pod-name&gt; --image=nginx --restart=Never">kubectl run &lt;pod-name&gt; --image=nginx --restart=Never</code>
+                                <span class="comment"># run a single instance of an nginx container using "run-pod/v1"
+                                    generator</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="create-A-Service">Creating A Service</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl create svc nodeport &lt;svc-name&gt; --tcp=8080">kubectl create svc nodeport &lt;svc-name&gt; --tcp=8080</code>
+                                <span class="comment"># create a NodePort service that exposes TCP port 8080 on the
+                                    nodes and maps it to port 80 in the pods</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="create-A-Deployment">Creating A Deployment</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl create -f &lt;name.of.file&gt;">kubectl create -f &lt;name.of.file&gt;</code>
+                                <span class="comment"># create resources from a file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl apply -f &lt;name.of.file&gt;">kubectl apply -f &lt;name.of.file&gt;</code>
+                                <span class="comment"># apply changes from a file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl create deploy &lt;deploy-name&gt; --image=nginx">kubectl create deploy &lt;deploy-name&gt; --image=nginx</code>
+                                <span class="comment"># create a deployment with nginx container</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="interactive-Pod">Interactive Pod</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl run &lt;pod-name&gt; --image=busybox --rm -it --restart=Never -- &lt;sh&gt;">kubectl run &lt;pod-name&gt; --image=busybox --rm -it --restart=Never -- &lt;sh&gt;</code>
+                                <span class="comment"># run a temporary busybox container, open an interactive shell and
+                                    delete it when it exits</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="output-YAML">Output YAML to A File</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl create deploy &lt;deploy-name&gt; --image=nginx --dry-run -o yaml &gt; deploy.yaml">kubectl create deploy &lt;deploy-name&gt; --image=nginx --dry-run -o yaml &gt; deploy.yaml</code>
+                                <span class="comment"># create a deployment with an nginx container in YAML format
+                                    without creating the resources</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get po &lt;pod-name&gt; -o yaml --export &gt; pod.yaml">kubectl get po &lt;pod-name&gt; -o yaml --export &gt; pod.yaml</code>
+                                <span class="comment"># get a pod and output the configuration to a file in YAML format,
+                                    ignoring cluster-specific information</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Changing Resource Attributes</h2>
+                    <div class="content">
+                        <div class="subsection">
+                            <h3 id="taint">Taint</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl taint &lt;node-name&gt; &lt;taint-name&gt;">kubectl taint &lt;node-name&gt; &lt;taint-name&gt;</code>
+                                <span class="comment"># add taint to a node</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="labels">Labels</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl label &lt;node-name&gt; disktype=ssd">kubectl label &lt;node-name&gt; disktype=ssd</code>
+                                <span class="comment"># add label to a node</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl label &lt;pod-name&gt; env=prod">kubectl label &lt;pod-name&gt; env=prod</code>
+                                <span class="comment"># add label to a pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="cordon-uncordon">Cordon/Uncordon</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl cordon &lt;node-name&gt;">kubectl cordon &lt;node-name&gt;</code>
+                                <span class="comment"># mark a node as unschedulable</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl uncordon &lt;node-name&gt;">kubectl uncordon &lt;node-name&gt;</code>
+                                <span class="comment"># mark a node as schedulable</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="drain">Drain</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl drain &lt;node-name&gt;">kubectl drain &lt;node-name&gt;</code>
+                                <span class="comment"># drain a node in preparation for maintenance</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="nodes-change">Nodes</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl delete node &lt;node-name&gt;">kubectl delete node &lt;node-name&gt;</code>
+                                <span class="comment"># delete a node from the cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl edit node &lt;node-name&gt;">kubectl edit node &lt;node-name&gt;</code>
+                                <span class="comment"># edit a node's configuration</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="namespaces-change">Namespaces</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl delete ns &lt;namespace-name&gt;">kubectl delete ns &lt;namespace-name&gt;</code>
+                                <span class="comment"># delete a namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl edit ns &lt;namespace-name&gt;">kubectl edit ns &lt;namespace-name&gt;</code>
+                                <span class="comment"># edit a namespace's configuration</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="deployments-change">Deployments</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl delete deploy &lt;deploy-name&gt;">kubectl delete deploy &lt;deploy-name&gt;</code>
+                                <span class="comment"># delete a deployment</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl edit deploy &lt;deploy-name&gt;">kubectl edit deploy &lt;deploy-name&gt;</code>
+                                <span class="comment"># edit a deployment's configuration</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get roles --all-namespaces kubectl expose deployment &lt;deploy-name&gt; --port=80 --type=NodePort">kubectl get roles --all-namespaces kubectl expose deployment &lt;deploy-name&gt; --port=80 --type=NodePort</code>
+                                <span class="comment"># expose deployment as a NodePort service</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl scale deploy &lt;deploy-name&gt; --replicas=5">kubectl scale deploy &lt;deploy-name&gt; --replicas=5</code>
+                                <span class="comment"># scale a deployment to 5 replicas</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="pods-change">Pods</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl delete pod &lt;pod-name&gt;">kubectl delete pod &lt;pod-name&gt;</code>
+                                <span class="comment"># delete a pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl edit pod &lt;pod-name&gt;">kubectl edit pod &lt;pod-name&gt;</code>
+                                <span class="comment"># edit a pod's configuration</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Viewing Resource Information</h2>
+                    <div class="content">
+                        <div class="subsection">
+                            <h3 id="secrets">Secrets</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get secrets">kubectl get secrets</code>
+                                <span class="comment"># display a list of secrets in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get secrets --all-namespaces">kubectl get secrets --all-namespaces</code>
+                                <span class="comment"># display a list of secrets in all namespaces</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get secrets -o yaml">kubectl get secrets -o yaml</code>
+                                <span class="comment"># display the secrets in the current namespace in YAML
+                                    format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="configmaps">ConfigMaps</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get cm">kubectl get cm</code>
+                                <span class="comment"># display a list of config maps in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get cm --all-namespaces">kubectl get cm --all-namespaces</code>
+                                <span class="comment"># display a list of config maps in all namespaces</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get cm --all-namespaces -o yaml">kubectl get cm --all-namespaces -o yaml</code>
+                                <span class="comment"># display the config maps in all namespaces in yaml format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="ingress">Ingress</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get ing">kubectl get ing</code>
+                                <span class="comment"># display a list of ingresses in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get ing --all-namespaces">kubectl get ing --all-namespaces</code>
+                                <span class="comment"># display list of all ingresses in all namespaces</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="persistentvolume">PersistentVolume</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get pvc">kubectl get pvc</code>
+                                <span class="comment"># display list of persistent volume claims in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl describe pvc">kubectl describe pvc</code>
+                                <span class="comment"># display detailed information about the persistent volume claims
+                                    in the cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="storageclass">StorageClass</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get sc">kubectl get sc</code>
+                                <span class="comment"># display list of all storage classes in the cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get sc -o yaml">kubectl get sc -o yaml</code>
+                                <span class="comment"># display the storage classes in yaml format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="api-call">API Call</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get --raw /apis/metrics.k8s.io/">kubectl get --raw /apis/metrics.k8s.io/</code>
+                                <span class="comment"># get raw json data for the metrics API</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="cluster-info">Cluster Info</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl config">kubectl config</code>
+                                <span class="comment"># view and modify kubeconfig files</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl cluster-info">kubectl cluster-info</code>
+                                <span class="comment"># display information about the kubernetes cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get componentstatuses">kubectl get componentstatuses</code>
+                                <span class="comment"># get the status of the various components in the kubernetes
+                                    cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Viewing Resource Information</h2>
+                    <div class="content">
+                        <div class="subsection">
+                            <h3 id="events">Events</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get events">kubectl get events</code>
+                                <span class="comment"># display list of events in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get events -n kube-system">kubectl get events -n kube-system</code>
+                                <span class="comment"># display list of events in the kube-system namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get events -w">kubectl get events -w</code>
+                                <span class="comment"># watch for new events in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="logs">Logs</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl logs &lt;pod-name&gt;">kubectl logs &lt;pod-name&gt;</code>
+                                <span class="comment"># display logs of the specified pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl logs --since=1h &lt;pod-name&gt;">kubectl logs --since=1h &lt;pod-name&gt;</code>
+                                <span class="comment"># display the logs of a pod for the past 1 hour</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl logs -tail=20 &lt;pod-name&gt;">kubectl logs -tail=20 &lt;pod-name&gt;</code>
+                                <span class="comment"># display the last 20 lines for the logs for a pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl logs -f -c &lt;container-name&gt; &lt;pod-name&gt;">kubectl logs -f -c &lt;container-name&gt; &lt;pod-name&gt;</code>
+                                <span class="comment"># follow the logs for a specific container in the pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl logs &lt;pod-name&gt; &gt; pod.log">kubectl logs &lt;pod-name&gt; &gt; pod.log</code>
+                                <span class="comment"># save the logs for a pod to a file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="service-accounts">Service Accounts</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get sa">kubectl get sa</code>
+                                <span class="comment"># display a list of service accounts in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get sa -o yaml">kubectl get sa -o yaml</code>
+                                <span class="comment"># display a list of service accounts in yaml format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get serviceaccount default -o yaml">kubectl get serviceaccount default -o yaml</code>
+                                <span class="comment"># save the "default" service account in the yaml format to a
+                                    file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl replace serviceaccount default -f sa.yaml">kubectl replace serviceaccount default -f sa.yaml</code>
+                                <span class="comment"># replace the contents of the "default" service account with the
+                                    contents of a yaml file</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="replicasets">ReplicaSets</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get rs">kubectl get rs</code>
+                                <span class="comment"># display a list of all replica sets in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl describe rs">kubectl describe rs</code>
+                                <span class="comment"># display detailed information about replica sets in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get rs -o wide">kubectl get rs -o wide</code>
+                                <span class="comment"># display a list of replica sets in the current namespace with
+                                    additional details</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get rs -o yaml">kubectl get rs -o yaml</code>
+                                <span class="comment"># display the replica sets in the current namespace in yaml
+                                    format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="multiple-resources">Multiple Resources</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get svc,po">kubectl get svc,po</code>
+                                <span class="comment"># display list of services and pods in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get deploy,no">kubectl get deploy,no</code>
+                                <span class="comment"># display list of deployments and nodes in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get all">kubectl get all</code>
+                                <span class="comment"># display list of all resources in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl get all --all-namespaces">kubectl get all --all-namespaces</code>
+                                <span class="comment"># display list of all resources in all namespaces</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Viewing Resource Information</h2>
+                    <div class="content">
+                        <div class="subsection">
+                            <h3 id="namespaces">Namespaces</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get ns">kubectl get ns</code>
+                                <span class="comment"># display a list of all namespaces in the current cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get ns -o yaml">kubectl get ns -o yaml</code>
+                                <span class="comment"># display the namespaces in the cluster in yaml format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl describe ns">kubectl describe ns</code>
+                                <span class="comment"># display detailed information about a namespace in the
+                                    cluster</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="deployments">Deployments</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get deploy">kubectl get deploy</code>
+                                <span class="comment"># display list of all deployments in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl describe deploy">kubectl describe deploy</code>
+                                <span class="comment"># display detailed information about deployments in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get deploy -o wide">kubectl get deploy -o wide</code>
+                                <span class="comment"># display list of deployments in the current namespace with
+                                    additional details</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get deploy -o yaml">kubectl get deploy -o yaml</code>
+                                <span class="comment"># display the deployments in the current namespace in yaml
+                                    format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="services">Services</h3>
+                            <div class="command">
+                                <code data-fulltext="kubectl get svc">kubectl get svc</code>
+                                <span class="comment"># display a list of all services in the current namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl describe svc">kubectl describe svc</code>
+                                <span class="comment"># display detailed information about services in the current
+                                    namespace</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get svc -o wide">kubectl get svc -o wide</code>
+                                <span class="comment"># display a detailed list of services about the current namespace
+                                    with additional details</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get svc -o yaml">kubectl get svc -o yaml</code>
+                                <span class="comment"># display the services in the current namespace in yaml
+                                    format</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code data-fulltext="kubectl get svc --show-labels">kubectl get svc --show-labels</code>
+                                <span class="comment"># display a list of services in the current namespace including
+                                    their labels</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection">
+                            <h3 id="real-time-monitoring">Real-Time Monitoring</h3>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl top pod &lt;pod-name&gt;">kubectl top pod &lt;pod-name&gt;</code>
+                                <span class="comment"># display real-time CPU and memory usage for a specific pod</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                            <div class="command">
+                                <code
+                                    data-fulltext="kubectl top node &lt;node-name&gt;">kubectl top node &lt;node-name&gt;</code>
+                                <span class="comment"># display real-time CPU and memory usage for a specific
+                                    node</span>
+                                <button class="copy-btn">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="subsection">
+                    <h3 id="roles">Roles</h3>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get roles --all-namespaces">kubectl get roles --all-namespaces</code>
+                        <span class="comment"># display a list of all roles in all namespaces</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <div class="command">
+                        <code
+                            data-fulltext="kubectl get roles --all-namespaces -o yaml">kubectl get roles --all-namespaces -o yaml</code>
+                        <span class="comment"># display the roles in all namespaces in YAML format</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- Floating Mail Me button -->
+    <button class="floating-mail-btn" id="floatingMailBtn">
+        <i class="fas fa-paper-plane"></i> Mail Me
+    </button>
+
+    <!-- Popup -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <h2>Hello!</h2>
+            <p>If you need support and help, feel free to mail me here:</p>
+            <a href="mailto:challadinesh17@outlook.com" class="email-link">
+                <i class="fas fa-paper-plane"></i> Send Email
+            </a>
+        </div>
+    </div>
+    <div class="support-section">
+        <h2 align="center">🙏 Support</h2>
+
+        <p align="center">
+            <a href="https://buymeacoffee.com/dk7774496g" target="_blank"><img
+                    src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="23"
+                    width="100" style="border-radius:2px" /></a>
+        </p>
+        <hr>
+        <p align="center" style="color:#5fff6d; font-weight:bold;">
+            Developed with ❤️ in India 🇮🇳
+        </p>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
